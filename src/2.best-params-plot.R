@@ -10,7 +10,7 @@ source(file.path("src", "type-scenes.R"))
 
 k.range <- 2:15
 size.range <- c(40, 50, 60, 70)
-input.dir <- file.path("output")
+data.dir <- file.path("data")
 plot.dir <- "plot"
 labels <- c(
   'stem-adj-500-sub80',
@@ -23,6 +23,13 @@ labels <- c(
 #
 
 plotfile <- function(file, plot.fun, ...) {
+	# create output directory
+	if(! dir.exists(dirname(file))) {
+	  dir.create(dirname(file), recursive = T)
+	}
+	
+	cat('plotfile: ', file, '\n')
+	
   pdf(
     file = file,
     width = 10,
@@ -101,7 +108,7 @@ plot.mean.ari.by.offset <- function(ari, k.range, sample.size, label) {
   axis(1)
   axis(2)
   title(
-    xlab = "k",
+    xlab = "offset",
     ylab = "mean adjusted rand index",
     main = paste(label, "\nsample size =", sample.size)
   )
@@ -124,7 +131,7 @@ for (label in labels) {
 
     # load the ari data
     ari <- read.table(
-      file = file.path(input.dir, label, "ari-by-offset", sample.size)
+      file = file.path(data.dir, "ari-by-offset", label, sample.size)
     )
 
     # boxplot of all ari values by k

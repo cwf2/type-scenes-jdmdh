@@ -502,10 +502,10 @@ ari <- function(sample.size, k.range, dir.input) {
 
 alt.ari <- function(sample.size, k.range, dir.input, ncores=0) {
   cat("Calculating ari per offset\n")
-  do.call(cbind,
-    mclapply(k.range, function(k) {
-      cat("\tsize =", sample.size, "k =", k, "\n")
-      sapply(seq(0, sample.size-5, 5), function(offset) {
+
+  repeated_function <- function(k) {
+     cat("\tsize =", sample.size, "k =", k, "\n")
+     sapply(seq(0, sample.size-5, 5), function(offset) {
         x <- read.table(file.path(
           dir.input,
           sprintf("%02i-%02i", sample.size, offset),
@@ -515,6 +515,19 @@ alt.ari <- function(sample.size, k.range, dir.input, ncores=0) {
           adjustedRandIndex(x[,i[1]], x[,i[2]])
         })
       })
-    }, mc.cores=ncores)
-  )
+  }
+	
+	wrapper <- function(ncores) {
+		if (ncores > 1) {
+			return (
+				mclapply(k.range, repeated_function, mc.cores=ncores)
+			)
+		} else {
+			return (
+				lapply(k.range, repeated_function)
+			)
+		}
+	}
+	
+  do.call(cbind, wrapper(ncores))
 }

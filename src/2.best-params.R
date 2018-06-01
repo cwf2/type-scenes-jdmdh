@@ -10,7 +10,7 @@ source(file.path("src", "type-scenes.R"))
 
 k.range <- 2:15
 size.range <- c(40, 50, 60, 70)
-base.dir <- file.path("output")
+data.dir <- file.path("data")
 labels <- c(
   'stem-adj-500-sub80',
   'stem-adj-500-sub90',
@@ -24,10 +24,12 @@ ncores <- 3
 ari.one.size <- function(
   sample.size,
   k.range,
-  data.dir) {
+  data.dir,
+	label,
+  n.cores) {
 
-  dir.output <- file.path(data.dir, "ari-by-offset")
-  dir.input <- file.path(data.dir, "class")
+  dir.output <- file.path(data.dir, "ari-by-offset", label)
+  dir.input <- file.path(data.dir, "class", label)
 
   # create output directory
   if(! dir.exists(dir.output)) {
@@ -35,7 +37,7 @@ ari.one.size <- function(
   }
 
   write.table(
-    x = alt.ari(sample.size, k.range, dir.input, ncores),
+    x = alt.ari(sample.size, k.range, dir.input, n.cores),
     file = file.path(dir.output, sample.size)
   )
 }
@@ -51,7 +53,11 @@ for (label in labels) {
     ari.one.size(
       sample.size = sample.size,
       k.range = k.range,
-      data.dir = file.path(base.dir, label)
+      data.dir = data.dir,
+			label = label,
+			n.cores = ncores
     )
   }
 }
+
+warnings()
