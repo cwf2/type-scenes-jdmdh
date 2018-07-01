@@ -8,7 +8,7 @@
 library(data.table) # keep
 library(parallel)
 library(tm) # keep
-library(topicmodels)
+#library(topicmodels)
 library(mclust)
 
 source(file.path("src", "tesserae.R"))
@@ -516,7 +516,7 @@ alt.ari <- function(sample.size, k.range, dir.input, ncores=0) {
         })
       })
   }
-	
+
 	wrapper <- function(ncores) {
 		if (ncores > 1) {
 			return (
@@ -528,6 +528,6 @@ alt.ari <- function(sample.size, k.range, dir.input, ncores=0) {
 			)
 		}
 	}
-	
+
   do.call(cbind, wrapper(ncores))
 }
