@@ -95,12 +95,20 @@ get.stop <- function(tokens, n=25, hapax.exclude=T) {
 
   count <- sort(table(unlist(tokens)), decreasing=T)
 
-  top <- 1:n
+  mfw <- c()
+
+  if (n > 0) {
+     mfw <- c(1:n)
+  }
 
   hapax <- c()
-  if (hapax.exclude) hapax <- which(count==1)
+  if (hapax.exclude) {
+    hapax <- which(count==1)
+  }
 
-  names(count[union(top, hapax)])
+  stopids <- union(mfw, hapax)
+
+  names(count[stopids])
 }
 
 feat.tfidf <- function(tok) {
