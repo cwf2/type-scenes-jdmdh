@@ -1,0 +1,7 @@
+.Rhistory
+data/class/*
+.DS_Store
+.vagrant
+plot
+output
+data
