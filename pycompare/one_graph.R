@@ -66,7 +66,7 @@ samples <- rbindlist(samples)[, `:=`(
 
 # Export samples to file
 if (! is.na(export.file.labels)) {
-  print('Exporting sample labels to', export.file.labels, '\n')
+  cat('Exporting sample labels to', export.file.labels, '\n')
   write(as.character(samples$auth),
     file=export.file.labels,
     sep='\n')
@@ -86,7 +86,6 @@ if (length(stoplist) > 0) {
 }
 
 # Extract feature vectors
-cat('Calculating TF-IDF weights\n')
 feat <- feat.tfidf(samples$tok)
 
 # Export feature vectors to file
@@ -101,5 +100,7 @@ pca <- prcomp(feat)$x[,1:2]
 
 # plot
 cat('Plotting\n')
+pdf('r_output.pdf', width=8, height=5)
 plot(pca, col=samples$auth, pch=1, lwd=3, cex=2)
 legend('topright', legend=levels(samples$auth), col=1:6, pch=1, cex=2)
+dev.off()
