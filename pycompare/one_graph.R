@@ -2,6 +2,7 @@
 source(file.path("src", "refactored.R"))
 
 # libraries
+library(ggplot2)
 library(jsonlite)
 
 # set parameters
@@ -66,7 +67,7 @@ samples <- rbindlist(samples)[, `:=`(
 
 # Export samples to file
 if (! is.na(export.file.labels)) {
-  print('Exporting sample labels to', export.file.labels, '\n')
+  cat('Exporting sample labels to', export.file.labels, '\n')
   write(as.character(samples$auth),
     file=export.file.labels,
     sep='\n')
@@ -101,5 +102,9 @@ pca <- prcomp(feat)$x[,1:2]
 
 # plot
 cat('Plotting\n')
-plot(pca, col=samples$auth, pch=1, lwd=3, cex=2)
-legend('topright', legend=levels(samples$auth), col=1:6, pch=1, cex=2)
+png(file='r_output.png', width=800, height=500)
+ggplot(data.frame(pca, auth=samples$auth), aes(x=-PC1, y=PC2)) +
+   geom_point(aes(color=auth), size=3) +
+   scale_colour_brewer(palette = "Set1") +
+   labs(title='R lems + R pipeline')
+dev.off()
