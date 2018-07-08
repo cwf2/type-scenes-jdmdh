@@ -87,7 +87,6 @@ if (length(stoplist) > 0) {
 }
 
 # Extract feature vectors
-cat('Calculating TF-IDF weights\n')
 feat <- feat.tfidf(samples$tok)
 
 # Export feature vectors to file
