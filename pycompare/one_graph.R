@@ -3,6 +3,7 @@ source(file.path("src", "refactored.R"))
 
 # libraries
 library(ggplot2)
+library(RColorBrewer)
 library(jsonlite)
 
 # set parameters
@@ -98,12 +99,38 @@ if (! is.na(export.file.tfidf)) {
 # Optional PCA
 cat('Performing PCA\n')
 pca <- prcomp(feat)$x[,1:2]
+pca[,1] <- 0 - pca[,1]
 
 # plot
 cat('Plotting\n')
 png(file='r_output.png', width=800, height=500)
-ggplot(data.frame(pca, auth=samples$auth), aes(x=-PC1, y=PC2)) +
+ggplot(data.frame(pca, auth=samples$auth), aes(x=PC1, y=PC2)) +
    geom_point(aes(color=auth), size=3) +
    scale_colour_brewer(palette = "Set1") +
    labs(title='R lems + R pipeline')
 dev.off()
+
+#
+# graph each author separately
+#
+
+# generate labels
+
+loci <- corpus[order(pk)][pk %in% unlist(lapply(samples$pk, min)), loc]
+
+for (auth in levels(samples$auth)) {
+	pdf(file=paste('r_pca_', auth, '.pdf', sep=''), width=8, height=5, pointsize=8)
+	plot(
+		pca[samples$auth==auth,],
+		type = 'n',
+		main = paste('R', '-', auth)
+	)
+	text(
+		pca[samples$auth==auth,],
+		labels = loci[samples$auth==auth]
+	)
+	dev.off()
+}
+
+
+
